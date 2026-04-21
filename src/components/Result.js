@@ -11,8 +11,10 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
     }
   }, [time]);
 
-  let targetDate = time ? new Date(time) : date;
-  
+  const targetDate = time
+    ? new Date(time + "Z") // treat API time as UTC
+    : new Date();
+
   const formattedDate = targetDate.toLocaleDateString("en-US", {
     weekday: "short",
     day: "numeric",
@@ -32,7 +34,7 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
     <div className="result-screen">
       <button className="back-btn" onClick={handleBack}>
         <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-          <path d="M15 18l-6-6 6-6"/>
+          <path d="M15 18l-6-6 6-6" />
         </svg>
         Back
       </button>
@@ -53,14 +55,14 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
 
       <div className="weather-details">
         <div className="detail-card">
-          <div className="detail-title">WIND<br/>SPEED</div>
+          <div className="detail-title">WIND<br />SPEED</div>
           <div className="detail-value">
             {windspeed} <span className="detail-unit">km/h</span>
           </div>
         </div>
-        
+
         <div className="detail-card">
-          <div className="detail-title">WEATHER<br/>CODE</div>
+          <div className="detail-title">WEATHER<br />CODE</div>
           <div className="detail-value">{weathercode}</div>
         </div>
       </div>
