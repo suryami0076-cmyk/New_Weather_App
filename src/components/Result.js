@@ -1,17 +1,23 @@
 import React from "react";
 import "./result.css";
 
-const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp }) => {
-
-  const targetDate = time
-    ? new Date(time + "Z") // treat API time as UTC
-    : new Date();
+const Result = ({
+  city,
+  temp,
+  desc,
+  icon,
+  windspeed,
+  time,
+  weathercode,
+  setTemp,
+}) => {
+  const targetDate = time ? new Date(time + "Z") : new Date();
 
   const formattedDate = targetDate.toLocaleDateString("en-US", {
     weekday: "short",
     day: "numeric",
     month: "short",
-    year: "numeric"
+    year: "numeric",
   });
 
   const hours = targetDate.getHours();
@@ -40,17 +46,19 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
         Back
       </button>
 
-      <div className="city-name">{city.toUpperCase()}</div>
+      <div className="city-name">
+        {city ? city.toUpperCase() : "UNKNOWN"}
+      </div>
 
       <div className="weather-main">
-        <div className="weather-icon-large">{icon}</div>
+        <div className="weather-icon-large">{icon || "🌤️"}</div>
 
         <div className="temperature">
-          <span className="temp-value">{temp}</span>
+          <span className="temp-value">{temp ?? "--"}</span>
           <span className="temp-unit">°C</span>
         </div>
 
-        <div className="weather-desc">{desc}</div>
+        <div className="weather-desc">{desc || "No data"}</div>
 
         <div className="weather-time">
           {formattedDate} · {timeString}
@@ -65,7 +73,8 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
             WIND<br />SPEED
           </div>
           <div className="detail-value">
-            {windspeed} <span className="detail-unit">km/h</span>
+            {windspeed ?? "--"}{" "}
+            <span className="detail-unit">km/h</span>
           </div>
         </div>
 
@@ -73,7 +82,9 @@ const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp 
           <div className="detail-title">
             WEATHER<br />CODE
           </div>
-          <div className="detail-value">{weathercode}</div>
+          <div className="detail-value">
+            {weathercode ?? "--"}
+          </div>
         </div>
       </div>
     </div>
