@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./result.css";
 
 const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp }) => {
-  const [date, setDate] = useState(new Date());
+  // const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     if (!time) {
-      const timer = setInterval(() => setDate(new Date()), 1000);
+      const timer = setInterval(() => new Date(), 1000);
       return () => clearInterval(timer);
     }
   }, [time]);
