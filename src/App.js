@@ -10,38 +10,57 @@ function App() {
   const [temp, setTemp] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
+  const [windspeed, setWindspeed] = useState("");
+  const [weatherTime, setWeatherTime] = useState("");
+  const [weathercode, setWeathercode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const findWeather = async () => {
+  const findWeather = async (searchCity) => {
+    const targetCity = searchCity || input;
+    if (targetCity === "") {
+      alert("The city name can't be empty!");
+      return;
+    }
+    setIsLoading(true);
     try {
-      const apikey = "e87ebd97ab8692cfd5691edbbf9bf3e2";
-      const unit = "metric";
-      const url =
-        "https://api.openweathermap.org/data/2.5/weather?q=" +
-        input +
-        "&appid=" +
-        apikey +
-        "&units=" +
-        unit;
+      const url = "https://weather-app-a5xx.onrender.com/weather?location=" + targetCity;
       const response = await axios.get(url);
-      const temp = await response.data.main.temp;
-      const description = await response.data.weather[0].description;
-      const icon = await response.data.weather[0].icon;
-      const imageURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
+
+      const temp = response.data.temperature;
+      const description = response.data.weatherDescription;
+      const icon = response.data.weatherIcon;
+      const windspeed = response.data.windspeed;
+      const time = response.data.time;
+      const code = response.data.weathercode;
+
       setTemp(temp);
       setDescription(description);
-      setIcon(imageURL);
+      setIcon(icon);
+      setWindspeed(windspeed);
+      setWeatherTime(time);
+      setWeathercode(code);
       setInput("");
+
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        alert("Enter the valid city name");
-      } else if (input === "") {
-        alert("The city name can't be empty!");
+      console.log("API Error:", error.response?.data || error.message);
+      if (error.response && error.response.status === 500) {
+        alert("Enter a valid city name");
+      } else {
+        alert("Failed to fetch weather. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <div className="app">
-      {temp === "" ? (
+      {isLoading ? (
+        <div className="loader-container">
+          <div className="spinner"></div>
+          <div className="loader-text">Fetching weather...</div>
+        </div>
+      ) : temp === "" ? (
         <Input
           setInput={setInput}
           setCity={setCity}
@@ -54,6 +73,9 @@ function App() {
           temp={temp}
           desc={description}
           icon={icon}
+          windspeed={windspeed}
+          time={weatherTime}
+          weathercode={weathercode}
           setTemp={setTemp}
         />
       )}

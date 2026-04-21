@@ -1,79 +1,68 @@
 import React, { useState, useEffect } from "react";
-import Button from "@mui/joy/Button";
 import "./result.css";
-// import { IoMdOutlineLocation } from "react-icons/io5";
 
-const Result = ({ city, temp, desc, icon, setTemp }) => {
+const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp }) => {
   const [date, setDate] = useState(new Date());
 
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-
-  let period = "AM";
-  if (hours >= 12) {
-    period = "PM";
-    hours -= 12;
-  }
-
-  const timeString =
-    hours.toString().padStart(2, "0") +
-    ":" +
-    minutes.toString().padStart(2, "0") +
-    " " +
-    period;
-
-    
-
   useEffect(() => {
-    var timer = setInterval(() => setDate(new Date()), 1000);
-    return function cleanup() {
-      clearInterval(timer);
-    };
+    if (!time) {
+      const timer = setInterval(() => setDate(new Date()), 1000);
+      return () => clearInterval(timer);
+    }
+  }, [time]);
+
+  let targetDate = time ? new Date(time) : date;
+  
+  const formattedDate = targetDate.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
   });
 
+  let hours = targetDate.getHours();
+  const minutes = targetDate.getMinutes().toString().padStart(2, "0");
+  const timeString = `${hours.toString().padStart(2, "0")}:${minutes}`;
+
+  const handleBack = () => {
+    setTemp("");
+  };
+
   return (
-    <div className="result">
-      <div className="result_box">
-        <p className="title">CURRENT WEATHER</p>
-        <div className="time-city">
-          <div className="time">{timeString}</div>
-          <div className="location">
-            <svg
-              width="46"
-              height="46"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 2.25c-3.727 0-6.75 2.878-6.75 6.422 0 4.078 4.5 10.54 6.152 12.773a.739.739 0 0 0 1.196 0c1.652-2.231 6.152-8.692 6.152-12.773 0-3.544-3.023-6.422-6.75-6.422Z"></path>
-              <path d="M12 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"></path>
-            </svg>
-            <h5>{city.slice(0,1).toUpperCase() + city.slice(1, city.length)}</h5>
+    <div className="result-screen">
+      <button className="back-btn" onClick={handleBack}>
+        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        Back
+      </button>
+
+      <div className="city-name">{city.toUpperCase()}</div>
+
+      <div className="weather-main">
+        <div className="weather-icon-large">{icon}</div>
+        <div className="temperature">
+          <span className="temp-value">{temp}</span>
+          <span className="temp-unit">°C</span>
+        </div>
+        <div className="weather-desc">{desc}</div>
+        <div className="weather-time">{formattedDate} · {timeString}</div>
+      </div>
+
+      <div className="divider"></div>
+
+      <div className="weather-details">
+        <div className="detail-card">
+          <div className="detail-title">WIND<br/>SPEED</div>
+          <div className="detail-value">
+            {windspeed} <span className="detail-unit">km/h</span>
           </div>
         </div>
-        <div className="temp">
-        <img src={icon} alt="logo" />
-        <h1>{temp} °C</h1>
-        </div>
-        <p>{desc}</p>
         
-        <br />
-        <div className="back">
-        <Button
-          varient="Solid"
-          color="info"
-          onClick={() => {
-            setTemp("");
-          }}
-        >
-          Back
-        </Button>
+        <div className="detail-card">
+          <div className="detail-title">WEATHER<br/>CODE</div>
+          <div className="detail-value">{weathercode}</div>
         </div>
-      
       </div>
     </div>
   );
