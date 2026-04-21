@@ -4,12 +4,7 @@ import "./result.css";
 const Result = ({ city, temp, desc, icon, windspeed, time, weathercode, setTemp }) => {
   // const [date, setDate] = useState(new Date());
 
-  useEffect(() => {
-    if (!time) {
-      const timer = setInterval(() => new Date(), 1000);
-      return () => clearInterval(timer);
-    }
-  }, [time]);
+  
 
   const targetDate = time
     ? new Date(time + "Z") // treat API time as UTC
